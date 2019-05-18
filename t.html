@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+</head>
+<body>
+<button>aaa</button>
+<div id="div1" style="width: 100px; height:100px;"></div>
+ <form name="upload" method="post" action="">
+	    	        <input type="file" id="f" size="30" />
+	    		<input type="button" id="b" value="上传" onclick="count()" />
+   		    </form>
+
+
+</body>
+<script>
+    $(document).ready(function(){
+
+        $("button").click(function(){
+          settime = setInterval(function(){
+            $.ajax({
+                type:'POST',
+                url:"http://127.0.0.1:5000/test",
+               <!--contentType: "application/json; charset=utf-8",-->
+
+                dataType:"json",  //数据格式设置为jsonp
+
+
+
+                success:function(result){
+                    alert(result.data);
+
+                }});
+                },5000);
+        });
+});
+</script>
+</html>

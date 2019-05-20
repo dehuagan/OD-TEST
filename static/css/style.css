@@ -262,8 +262,9 @@ a:link,a:visited
 
 .new_table
 {
-
+    display: none;
     width: 40%;
     height: 400px;
     float: left;
+    overflow: scroll;
 }

@@ -8,7 +8,14 @@ import threading
 
 from math import log10, pow
 from time import sleep,time
+from flask_cors import *
 
+from flask import Flask
+from flask import jsonify
+
+
+app = Flask(__name__)
+CORS(app, supports_credentials=True)
 class UDP_Data_Collector():
     ''''
     An instance of this class can listen on a specified port and collect
@@ -274,46 +281,84 @@ class Sensor:
 
         return self.function(self.average_difference)
 
-if __name__ == "__main__":
 
+udp = UDP_Data_Collector(simulate = False)
+udp.start()
+sleep(2)
+# while True:
+print('udp.data_buffer=',udp.data_buffer)
+    # sleep(1)
+
+
+@app.route('/initialize',methods=['GET','POST'])
+def initialize():
+
+
+    response = jsonify({'data':list(udp.data_buffer.keys())})
+    return response
+
+
+@app.route('/test',methods=['GET','POST'])
+def test():
+    return 'test success'
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
     # test the calibration functions
     f1 = Polynomial(coeffs=[5,1.5,10], scaling=100, inverse=False)
     assert f1(0)  == 5 + 1.5*0 + 10*0*0, 'something is wrong with f1(0)'
-    assert f1(200)== 5 + 1.5*2 + 10*2*2, 'something is wrong with f1(200)'  
+    assert f1(200)== 5 + 1.5*2 + 10*2*2, 'something is wrong with f1(200)'
 
     f2 = Polynomial(coeffs=[5,1.5,10], scaling=10, inverse=True)
     assert f2(100) == 5 + 1.5*0.1 + 10*0.1*0.1, 'something is wrong with f2(100)'
-    assert f2(1)   == 5 + 1.5*10 + 10*10*10   , 'something is wrong with f2(1)'  
+    assert f2(1)   == 5 + 1.5*10 + 10*10*10   , 'something is wrong with f2(1)'
 
     f3 = YuMingFunction(coeffs=[1,3,7], blank=1000)
     assert f3(100) == 1 + 3*1 + 7*1*1, 'something is wrong with f3(100)' # note 1 = LOG10(1000/100)
     assert f3(10)  == 1 + 3*2 + 7*2*2, 'something is wrong with f3(10)'  # note 2 = LOG10(1000/10)
 
     # test the 
-    udp = UDP_Data_Collector(simulate = False)
-    udp.start()
-    sleep(2)
-    sensors = []
-    sensors.append(Sensor(0x01,
-                          lambda x: log10(1023/x),
-                          udp.data_buffer
-                          ))
-    sensors.append(Sensor(0x03,
-                          Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse = True),
-                          udp.data_buffer
-                          ))
-    sensors.append(Sensor(0x05,
-                          YuMingFunction([-0.00456, 3.743, -1.0704, 2.379], blank=1713.21153846),
-                          udp.data_buffer
-                          ))
+    # udp = UDP_Data_Collector(simulate = False)
+    # udp.start()
+    # sleep(2)
+    # while True:
+    #     print('udp.data_buffer=',udp.data_buffer)
+    #     sleep(1)
 
-    while True:
-        for sensor in sensors:
-            print('Sensor with address <{:02x}>'.format(sensor.address))
-            sensor.get_differences()
-            print('raw differences    =', sensor.differences)
-            print('average difference =', sensor.average_difference)
-            print('OD estimate        =', sensor.OD)
+    # sensor = Sensor(0x03,
+    #        Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse=True),
+    #        udp.data_buffer
+    #        )
+
+    # sensors = []
+    # sensors.append(Sensor(0x01,
+    #                       lambda x: log10(1023/x),
+    #                       udp.data_buffer
+    #                       ))
+    # sensors.append(Sensor(0x03,
+    #                       Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse = True),
+    #                       udp.data_buffer
+    #                       ))
+    # sensors.append(Sensor(0x05,
+    #                       YuMingFunction([-0.00456, 3.743, -1.0704, 2.379], blank=1713.21153846),
+    #                       udp.data_buffer
+    #                       ))
+
+    # while True:
+    #     print('Sensor with address <{:02x}>'.format(sensor.address))
+    #     sensor.get_differences()
+    #     print('raw differences    =', sensor.differences)
+    #     print('average difference =', sensor.average_difference)
+    #     print('OD estimate        =', sensor.OD)
+    #     print('data_buffer=',sensor.data_source)
+    # for sensor in sensors:
+    #     print('Sensor with address <{:02x}>'.format(sensor.address))
+    #     sensor.get_differences()
+    #     print('raw differences    =', sensor.differences)
+    #     print('average difference =', sensor.average_difference)
+    #     print('OD estimate        =', sensor.OD)
 
 
     # because this test is based on simulated data, the 3 sensors below have the same

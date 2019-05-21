@@ -17,37 +17,12 @@
     <div id="panel">
         <div class="left_part">
 
-            <table border="0">
+            <table class="init_table" border="0">
                 <tr>
                     <th></th>
                     <th>address</th>
                     <th>print<input type="checkbox" id="print"></th>
                     <th>formula</th>
-                </tr>
-
-                <tr>
-                    <td><img src="static/icon/devices.png" style="height: 30px; width: 30px;"></td>
-                    <td>1</td>
-                    <td><input type="checkbox" name="check"></td>
-                    <td><input type="text" style="width: 200px;"></td>
-                </tr>
-                <tr>
-                    <td><img src="static/icon/devices.png" style="height: 30px; width: 30px;"></td>
-                    <td>2</td>
-                    <td><input type="checkbox"  name="check"></td>
-                    <td><input type="text" style="width: 200px;"></td>
-                </tr>
-                <tr>
-                    <td><img src="static/icon/devices.png" style="height: 30px; width: 30px;"></td>
-                    <td>3</td>
-                    <td><input type="checkbox"  name="check"></td>
-                    <td><input type="text" style="width: 200px;"></td>
-                </tr>
-                <tr>
-                    <td><img src="static/icon/devices.png" style="height: 30px; width: 30px;"></td>
-                    <td>4</td>
-                    <td><input type="checkbox"  name="check"></td>
-                    <td><input type="text" style="width: 200px;"></td>
                 </tr>
 
             </table>
@@ -128,6 +103,8 @@
 
 
 
+<!--######################################################################-->
+
 
 
 
@@ -140,34 +117,49 @@
 
 <!--######################################################################-->
     <!--初始化板子-->
-    <!--var boards;-->
-    <!--$.ajax({-->
-                 <!--type: 'POST',-->
-                 <!--url: 'http://127.0.0.1:5000/initialize',-->
-                 <!--dataType: 'json',-->
-                 <!--async:false,-->
-                 <!--success: function (data, textStatus, jqXHR) {-->
-                    <!--t = data.count;-->
-                    <!--result = data.result;-->
-                    <!--},-->
-                  <!--error:function(jqXHR){-->
-                    <!--console.log(jqXHR);-->
-                  <!--}-->
+    var boards = new Array();
+    setInterval(function() {
+    var boards_num;
+    $.ajax({
+             type: 'POST',
+             url: 'http://127.0.0.1:5000/initialize',
+             dataType: 'json',
+             async:false,
+             success: function (res, textStatus, jqXHR) {
+                boards_num = res.data.length;
+                for(var i = 0; i < boards_num; i++)
+                {
+                    if (boards.indexOf(res.data[i]) == -1)
+                    {
+                        boards.append(res.data[i]);
+                        var row = "<tr><td><img src='static/icon/devices.png' style='height: 30px; width: 30px;'></td><td>"+res.data[i]+"</td><td><input type='checkbox'  name='check' value='"+res.data[i]+"'></td><td><input type='text' style='width: 200px;'></td>";
+                        $(".init_table").append(row);
+                    }
 
-           <!--})-->
+                }
+             },
+             error:function(jqXHR){
+                console.log(jqXHR);
+             }
+
+         });
+
+
+
+         },11000);
 
 
     $(document).ready(function(){
           <!--控制面板伸缩-->
-          var i = 0;
+          var slide = 0;
           $("#flip").click(function(){
                 $("#panel").slideToggle("slow");
-                if (i == 0){
+                if (slide == 0){
                     $(".direction").attr("src","static/icon/down.png");
-                    i += 1;
+                    slide += 1;
                 } else {
                     $(".direction").attr("src","static/icon/up.png");
-                    i -= 1;
+                    slide -= 1;
                 }
           });
 
@@ -177,7 +169,10 @@
           $(".confirm").click(function(){
                 $("#panel").slideUp("slow");
                 $(".direction").attr("src","static/icon/down.png");
-                i += 1;
+                slide += 1;
+                <!--setInterval(function() {$.ajax({url:"http://127.0.0.1:5000/test",success:function(result){-->
+                    <!--alert(result);-->
+                <!--}});},5000);-->
 
           });
 

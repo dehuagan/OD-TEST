@@ -5,12 +5,11 @@ import random
 import re
 import socket
 import threading
-
+import json
 from math import log10, pow
 from time import sleep,time
 from flask_cors import *
-
-from flask import Flask
+from flask import Flask,request
 from flask import jsonify
 
 
@@ -281,7 +280,7 @@ class Sensor:
 
         return self.function(self.average_difference)
 
-
+##############################################################################
 udp = UDP_Data_Collector(simulate = False)
 udp.start()
 sleep(2)
@@ -298,9 +297,58 @@ def initialize():
     return response
 
 
+sensors = []
+@app.route('/produce_sensor',methods=['GET','POST'])
+def produce_sensor():
+    if request.method == 'POST':
+        if sensors:
+            print('before clean', sensors)
+            del sensors[:]
+            print('after',sensors)
+        rq = request.get_data()
+        para = json.loads(rq)
+        for i in para:
+            poly = []
+            for v in para[i]:
+                poly.append(float(v))
+            print('value', poly)
+            addr = int(i)
+            print(addr)
+            sensor = Sensor(addr,
+                            Polynomial(poly, scaling=1713.21153846, inverse=True),
+                            udp.data_buffer
+                            )
+            sensors.append(sensor)
+        print('sensors',sensors)
+        return 'sensor completed, please set the time interval'
+
+
+@app.route('/chart_data',methods=['GET','POST'])
+def chart_data():
+    # res_OD = []
+    # res_addr = []
+    res_data = {}
+    for s in sensors:
+        s.get_differences()
+        res_data[s.address] = s.OD
+        # res_addr.append(s.address)
+        #         # res_OD.append(s.OD)
+    res = jsonify(res_data)
+    return res
+
+
+
 @app.route('/test',methods=['GET','POST'])
 def test():
-    return 'test success'
+    if request.method == 'POST':
+        res = {}
+        rq = request.get_data()
+        para = json.loads(rq)
+        for i in para:
+            print('index',i)
+            print('value',para[i])
+        print(para)
+        return 'yes'
 
 
 
@@ -326,12 +374,19 @@ if __name__ == "__main__":
     # while True:
     #     print('udp.data_buffer=',udp.data_buffer)
     #     sleep(1)
+# {2:[],5:[]}
+    sensor1 = Sensor(0x02,
+           Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse=True),
+           udp.data_buffer
+           )
+    sensor2 = Sensor(0x05,
+                         Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse=True),
+               udp.data_buffer
+               )
 
-    # sensor = Sensor(0x03,
-    #        Polynomial([-0.00456, 3.743, -1.0704, 2.379], scaling=1713.21153846, inverse=True),
-    #        udp.data_buffer
-    #        )
-
+    while True:
+        print('2',sensor1.OD)
+        print('5',sensor2.OD)
     # sensors = []
     # sensors.append(Sensor(0x01,
     #                       lambda x: log10(1023/x),

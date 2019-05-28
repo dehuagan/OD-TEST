@@ -21,9 +21,10 @@
                 <tr>
                     <th></th>
                     <th>address</th>
-                    <th>print<input type="checkbox" id="print"></th>
+                    <th>print<input type="checkbox" id="print" value="-1"></th>
                     <th>formula</th>
                 </tr>
+
 
             </table>
 
@@ -36,7 +37,7 @@
     <div class="set_bar">
 
             <ul>
-                <li>TIME INTERVAL<input id="test" style="margin:10px;width:50px;" type="text">s</li>
+                <li>TIME INTERVAL<input id="text" style="margin:10px;width:50px;" type="text">s</li>
                 <li><a class="a1" href="#" title="start"><button class="button1 action button2"><img class="pic1" src="static/icon/start.png" style="height: 20px; width:20px;"></button></a></li>
                 <li><a href="#" title="clear the chart and table"><button class="button1 button2 clear"><img src="static/icon/clear.png" style="height: 20px; width:20px;"></button></a></li>
                 <li><a href="#" title="save data"><button class="button1 button2 save"><img src="static/icon/save.png" style="height: 20px; width:20px;"></button></a></li>
@@ -48,7 +49,12 @@
     </div>
     <div class="chart">
         <div id="main"></div>
-        <div class="new_table"><table border="1"></table></div>
+        <div class="new_table">
+            <table class="chart_table" border="1">
+
+
+            </table>
+        </div>
 
     </div>
 
@@ -61,37 +67,94 @@
 
     var myChart = echarts.init(document.getElementById('main'));
 
-    myChart.setOption({
-        title: {
-            text: 'CHART'
-        },
-        dataZoom: [{
-      type: 'slider',
-      show: true,
-      xAxisIndex: [0],
-      left: '9%',
-      bottom: -5,
-      start: 30,
-      end: 100 //初始化滚动条
-  }],
-        showAllSymbol: true,
-        legend: {
-            data:['od']
-        },
-        xAxis: {
-            data: []
-        },
-        yAxis: {},
-        series: [{
-            name: 'od',
-            type: 'line',
-            data: []
-        }]
-    });
 
 
+    var time_data = new Array();
+    var datadict = {};
+    var legends = new Array();
 
 
+    var prepare_series = function(data){
+        var series = [];
+        for(var i in data){
+            var item = {
+                name: 'OD'+i,
+                type:'line',
+                data:data[i]
+            }
+            series.push(item);
+        }
+        return series;
+    }
+
+    myChart.showLoading();
+    var update_mychart = function (res) {
+        myChart.hideLoading();
+        for(var i in res){
+            if(legends.indexOf('OD'+i) == -1){
+                legends.push('OD'+i);
+                datadict[i] = [res[i].toFixed(5)];
+            }else{
+                datadict[i].push(res[i].toFixed(5));
+            }
+        }
+        if(res){
+            var d=new Date();
+            var t=d.toLocaleTimeString();
+            time_data.push(t);
+        }
+
+
+        console.log('prepare_series(datadict)',prepare_series(datadict));
+        myChart.setOption({
+            tooltip : {
+                trigger: 'axis',
+            },
+            title: {
+                text: 'OD CHART'
+            },
+            dataZoom: [{
+              type: 'slider',
+              show: true,
+              xAxisIndex: [0],
+              left: '9%',
+              bottom: -5,
+              start: 30,
+              end: 100 //初始化滚动条
+            }],
+            showAllSymbol: true,
+            legend: {
+                data: legends
+            },
+            xAxis: {
+                data: time_data
+            },
+            yAxis: {},
+            series: prepare_series(datadict)
+        });
+
+    }
+
+
+    var settable = true;
+    var update_table = function(res){
+        if(settable){
+            settable = false;
+            var t_h;
+            for(var i in res){
+                t_h += "<th>OD"+i+"</th>";
+            }
+            $(".chart_table").append("<tr><th>TIME</th>"+t_h+"</tr>");
+        }else{
+            var t_d;
+            for(var i in res){
+                t_d += "<td>"+res[i]+"</td>";
+            }
+            var d1 = new Date();
+            var t1 = d1.toLocaleTimeString();
+            $(".chart_table").append("<tr><td>"+t1+"</td>"+t_d+"</tr>");
+        }
+    }
 
 
 
@@ -116,38 +179,43 @@
 
 
 <!--######################################################################-->
-    <!--初始化板子-->
+
+
+
+    <!--initialize the current boards-->
+
     var boards = new Array();
-    setInterval(function() {
-    var boards_num;
-    $.ajax({
-             type: 'POST',
-             url: 'http://127.0.0.1:5000/initialize',
-             dataType: 'json',
-             async:false,
-             success: function (res, textStatus, jqXHR) {
-                boards_num = res.data.length;
-                for(var i = 0; i < boards_num; i++)
-                {
-                    if (boards.indexOf(res.data[i]) == -1)
+    function get_boards() {
+        var boards_num;
+        $.ajax({
+                 type: 'POST',
+                 url: 'http://127.0.0.1:5000/initialize',
+                 dataType: 'json',
+                 async:false,
+                 success: function (res, textStatus, jqXHR) {
+                    boards_num = res.data.length;
+                    for(var i = 0; i < boards_num; i++)
                     {
-                        boards.append(res.data[i]);
-                        var row = "<tr><td><img src='static/icon/devices.png' style='height: 30px; width: 30px;'></td><td>"+res.data[i]+"</td><td><input type='checkbox'  name='check' value='"+res.data[i]+"'></td><td><input type='text' style='width: 200px;'></td>";
-                        $(".init_table").append(row);
+                        if (boards.indexOf(res.data[i]) == -1)
+                        {
+                            boards.push(res.data[i]);
+                            var row = "<tr><td><img src='static/icon/devices.png' style='height: 30px; width: 30px;'></td><td>"+res.data[i]+"</td><td><input type='checkbox'  name='check' value='"+res.data[i]+"'></td><td><input type='text' style='width: 200px;' name='"+res.data[i]+"'></td>";
+                            $(".init_table").append(row);
+                        }
+
                     }
+                 },
+                 error:function(jqXHR){
+                    console.log(jqXHR);
+                 }
 
-                }
-             },
-             error:function(jqXHR){
-                console.log(jqXHR);
-             }
+             });
 
-         });
+         }
 
 
-
-         },11000);
-
+    get_boards();
+    setInterval(get_boards,11000);
 
     $(document).ready(function(){
           <!--控制面板伸缩-->
@@ -165,14 +233,91 @@
 
 <!--##########################################################################-->
 
+          var refresh_chart = function(){
+                legends = [];
+                datadict = {};
+                time_data = [];
+                myChart.showLoading();
+                console.log('enter the clean stage');
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                    },
+                    title: {
+                        text: 'OD CHART'
+                    },
+                    dataZoom: [{
+                      type: 'slider',
+                      show: true,
+                      xAxisIndex: [0],
+                      left: '9%',
+                      bottom: -5,
+                      start: 30,
+                      end: 100 //初始化滚动条
+                    }],
+                    showAllSymbol: true,
+                    legend: {
+                        data: []
+                    },
+                    xAxis: {
+                        data: []
+                    },
+                    yAxis: {},
+                    series: []
+                };
+                myChart.setOption(option,true);
+          }
+
+
+
+
+
+
+
+
+
+
+
           <!--实现confirm按钮功能-->
+
           $(".confirm").click(function(){
+                if(legends.length > 0){
+                    refresh_chart();
+                }
+
+
                 $("#panel").slideUp("slow");
                 $(".direction").attr("src","static/icon/down.png");
                 slide += 1;
-                <!--setInterval(function() {$.ajax({url:"http://127.0.0.1:5000/test",success:function(result){-->
-                    <!--alert(result);-->
-                <!--}});},5000);-->
+                var select_print = {};
+
+                $.each($('input:checkbox'),function(){
+                    if(this.checked && $(this).val()!= -1){
+                        var formula = "input[name="+$(this).val()+"]"
+                        select_print[$(this).val()] =  $(formula).val().split(',');
+                    }
+
+                });
+
+
+                console.log(select_print);
+
+                $.ajax({
+                     type: 'POST',
+                     url: 'http://127.0.0.1:5000/produce_sensor',
+                     dataType: 'json',
+                     data: JSON.stringify(select_print),
+                     async:false,
+                     success: function (res, textStatus, jqXHR) {
+                        alert(res);
+                     },
+                     error:function(jqXHR){
+                        console.log(jqXHR);
+                     }
+
+                 });
+
+
 
           });
 
@@ -192,21 +337,44 @@
 
 
 <!--##########################################################################-->
+           function get_chart_data()
+           {
+                $.ajax({
+                     type: 'POST',
+                     url: 'http://127.0.0.1:5000/chart_data',
+                     dataType: 'json',
+                     async:false,
+                     success: function (res, textStatus, jqXHR) {
+                        console.log('response_data',res);
+                        update_mychart(res);
+                        update_table(res);
+                     },
+                     error:function(jqXHR){
+                        console.log(jqXHR);
+                     }
+                 });
 
+           }
 
            <!--实现action按钮功能-->
            var setaction = true;
+           var icount;
            $(".action").click(function(){
+                var interval = $("#text").val();
                 if(setaction){
                     $(".pic1").attr("src","static/icon/pause.png");
                     $(this).css("background-color","red");
                     $(".a1").attr("title","pause");
                     setaction = false;
+
+                    icount = setInterval(function(){get_chart_data()},parseInt(interval)*1000);
+
                 }else{
                     $(".pic1").attr("src","static/icon/start.png");
                     $(this).css("background-color","rgba(75, 154, 93, 0.75)");
                     $(".a1").attr("title","start");
                     setaction = true;
+                    clearInterval(icount);
                 }
 
            });
@@ -215,11 +383,10 @@
 <!--###################################################################################-->
         <!--实现show按钮控件-->
         var isShow = true;
-        <!--var new_table = "<div class='new_table'><table border='1'></table></div>";-->
 
         $(".show").click(function(){
 
-                <!--$(".main").css({"",""});-->
+
                 if(isShow){
                     $(".new_table").show();
                     $("#main").css("width","60%");
@@ -257,16 +424,25 @@
 
 
 
-          <!--初始化板子-->
-          <!--var boards = 3;-->
-          <!--for(var i = 0; i < boards; i++)-->
-          <!--{-->
-            <!---->
-                          <!---->
-          <!--}-->
 
 
+<!--###################################################################################-->
+<!--实现clear-->
+          $(".clear").click(function(){
+                $.ajax({
+                     type: 'POST',
+                     url: 'http://127.0.0.1:5000/chart_data',
+                     dataType: 'json',
+                     async:false,
+                     success: function (res, textStatus, jqXHR) {
+                        console.log(res);
+                     },
+                     error:function(jqXHR){
+                        console.log(jqXHR);
+                     }
 
+                 });
+          });
 
 
 

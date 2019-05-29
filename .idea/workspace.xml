@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="17630ae3-c522-44a6-a0c4-c33189cc81f3" name="Default" comment="third">
+    <list default="true" id="17630ae3-c522-44a6-a0c4-c33189cc81f3" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GIATsensor2.py" afterPath="$PROJECT_DIR$/GIATsensor2.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.html" afterPath="$PROJECT_DIR$/test.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -66,11 +65,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GIATsensor2.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GIATsensor2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GIATsensor2.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="311" column="29" lean-forward="true" selection-start-line="311" selection-start-column="29" selection-end-line="311" selection-end-column="29" />
+              <caret line="311" column="29" lean-forward="false" selection-start-line="311" selection-start-column="29" selection-end-line="311" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="793">
+              <caret line="192" column="0" lean-forward="true" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -157,10 +166,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="143" />
-    <option name="y" value="69" />
+    <option name="x" value="33" />
+    <option name="y" value="72" />
     <option name="width" value="1236" />
-    <option name="height" value="683" />
+    <option name="height" value="818" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -388,18 +397,26 @@
       <option name="project" value="LOCAL" />
       <updated>1558403413977</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fourth">
+      <created>1559024345650</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1559024345651</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="143" y="69" width="1236" height="683" extended-state="0" />
+    <frame x="33" y="72" width="1236" height="818" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1959799" sideWeight="0.4897436" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30973452" sideWeight="0.5033501" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5033501" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30973452" sideWeight="0.49664992" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.49664992" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1959799" sideWeight="0.5102564" order="2" side_tool="true" content_ui="tabs" />
@@ -420,7 +437,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="second" />
     <MESSAGE value="third" />
-    <option name="LAST_COMMIT_MESSAGE" value="third" />
+    <MESSAGE value="fourth" />
+    <option name="LAST_COMMIT_MESSAGE" value="fourth" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -792,14 +810,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2135">
-          <caret line="192" column="0" lean-forward="true" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -811,7 +821,15 @@
     <entry file="file://$PROJECT_DIR$/GIATsensor2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
-          <caret line="311" column="29" lean-forward="true" selection-start-line="311" selection-start-column="29" selection-end-line="311" selection-end-column="29" />
+          <caret line="311" column="29" lean-forward="false" selection-start-line="311" selection-start-column="29" selection-end-line="311" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="793">
+          <caret line="192" column="0" lean-forward="true" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
           <folding />
         </state>
       </provider>

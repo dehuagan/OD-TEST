@@ -21,7 +21,7 @@
                 <tr>
                     <th></th>
                     <th>address</th>
-                    <th>print<input type="checkbox" id="print" value="-1"></th>
+                    <th>select<input type="checkbox" id="print" value="-1"></th>
                     <th>formula</th>
                 </tr>
 
@@ -145,19 +145,22 @@
                 t_h += "<th>OD"+i+"</th>";
             }
             $(".chart_table").append("<tr><th>TIME</th>"+t_h+"</tr>");
+            add_row(res);
         }else{
-            var t_d;
-            for(var i in res){
-                t_d += "<td>"+res[i]+"</td>";
-            }
-            var d1 = new Date();
-            var t1 = d1.toLocaleTimeString();
-            $(".chart_table").append("<tr><td>"+t1+"</td>"+t_d+"</tr>");
+            add_row(res);
         }
     }
 
 
-
+    var add_row = function(res){
+        var t_d;
+        for(var i in res){
+            t_d += "<td>"+res[i].toFixed(5)+"</td>";
+        }
+        var d1 = new Date();
+        var t1 = d1.toLocaleTimeString();
+        $(".chart_table").append("<tr><td>"+t1+"</td>"+t_d+"</tr>");
+    }
 
 
 
@@ -283,6 +286,8 @@
           $(".confirm").click(function(){
                 if(legends.length > 0){
                     refresh_chart();
+                    $(".chart_table").empty("");
+                    settable = true;
                 }
 
 
@@ -429,19 +434,19 @@
 <!--###################################################################################-->
 <!--实现clear-->
           $(".clear").click(function(){
-                $.ajax({
-                     type: 'POST',
-                     url: 'http://127.0.0.1:5000/chart_data',
-                     dataType: 'json',
-                     async:false,
-                     success: function (res, textStatus, jqXHR) {
-                        console.log(res);
-                     },
-                     error:function(jqXHR){
-                        console.log(jqXHR);
-                     }
-
-                 });
+                var con;
+                con=confirm("sure to clear?"); //在页面上弹出对话框
+                if(con==true){
+                    $(".pic1").attr("src","static/icon/start.png");
+                    $(".action").css("background-color","rgba(75, 154, 93, 0.75)");
+                    $(".a1").attr("title","start");
+                    setaction = true;
+                    $("#text").val("");
+                    refresh_chart();
+                    $(".chart_table").empty("");
+                    settable = true;
+                    clearInterval(icount);
+                }
           });
 
 

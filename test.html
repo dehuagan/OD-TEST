@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="static/css/style.css" type="text/css">
     <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="static/js/echarts.common.min.js"></script>
+    <script type="text/javascript" src="static/js/FileSaver.js"></script>
 </head>
 <body>
 <div class="top">OD</div>
@@ -99,8 +100,8 @@
             }
         }
         if(res){
-            var d=new Date();
-            var t=d.toLocaleTimeString();
+            var d = new Date();
+            var t = d.getFullYear().toString()+"-"+(d.getMonth()+1).toString()+"-"+d.getDate().toString()+"-"+d.getHours().toString()+":"+d.getMinutes().toString()+":"+d.getSeconds().toString();
             time_data.push(t);
         }
 
@@ -158,13 +159,35 @@
             t_d += "<td>"+res[i].toFixed(5)+"</td>";
         }
         var d1 = new Date();
-        var t1 = d1.toLocaleTimeString();
+        var t1 = d1.getFullYear().toString()+"-"+(d1.getMonth()+1).toString()+"-"+d1.getDate().toString()+"-"+d1.getHours().toString()+":"+d1.getMinutes().toString()+":"+d1.getSeconds().toString();
         $(".chart_table").append("<tr><td>"+t1+"</td>"+t_d+"</tr>");
     }
 
 
 
+    var savefile = function(){
+        var str = "TIME";
+        for(var k=0; k<legends.length; k++){
+            str += ",";
+            str += legends[k];
+        }
+        str += "\n";
+        for(var i=0; i<time_data.length; i++){
+            str += time_data[i];
+            <!--str += ",";-->
 
+            for(var j in datadict){
+                str += ",";
+                str += datadict[j][i].toString();
+            }
+            str += " \n ";
+        }
+
+        var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "odfile.csv");//saveAs(blob,filename) //仅限于chorme的下载目录里
+
+
+    };
 
 
 
@@ -452,9 +475,11 @@
 
 
 
-
-
-
+<!--#########################################################################################-->
+<!--实现save按钮-->
+        $(".save").click(function(){
+            savefile();
+        });
 
 
 
